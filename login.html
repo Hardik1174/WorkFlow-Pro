@@ -57,6 +57,14 @@
         button:hover{
             background:#0f766e;
         }
+        .demo-btn{
+    margin-top:10px;
+    background:#0ea5e9;
+}
+
+.demo-btn:hover{
+    background:#0284c7;
+}
 
     </style>
 
@@ -80,6 +88,14 @@
         <button onclick="login()">
             Login
         </button>
+
+        <button
+        class="demo-btn"
+        onclick="fillDemoLogin()">
+        Use Demo Account
+    </button>
+
+</div>
 
     </div>
 
@@ -115,6 +131,15 @@
             }
 
         }
+        function fillDemoLogin(){
+
+    document.getElementById("username").value =
+    "admin";
+
+    document.getElementById("password").value =
+    "admin123";
+
+}
 
     </script>
 
