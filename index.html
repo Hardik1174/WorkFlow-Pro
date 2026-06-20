@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WorkFlow Pro</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<script>
+if(
+    sessionStorage.getItem("loggedIn")
+    !== "true"
+){
+    window.location.href =
+    "login.html";
+}
+</script>
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            <h2>WorkFlow Pro</h2>
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="#" onclick="showSection('dashboard')">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" onclick="showSection('employees')">
+                    <i class="fas fa-users"></i>
+                    <span>Employees</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" onclick="showSection('attendance')">
+                    <i class="fas fa-user-check"></i>
+                    <span>Attendance</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" onclick="showSection('leave')">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Leave</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" onclick="showSection('patients')">
+                    <i class="fas fa-hospital"></i>
+                    <span>Patients</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#" onclick="showSection('analytics')">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- Main Content -->
+
+<div class="main">
+
+    <!-- Navbar -->
+
+    <div class="navbar">
+
+    <div class="nav-left">
+
+        <button id="toggleBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="nav-info">
+            <h3>Admin Dashboard</h3>
+            <small>Welcome, Hardik</small>
+        </div>
+
+    </div>
+
+    <div class="nav-right">
+
+        <button id="themeBtn" class="theme-btn">
+            🌙 Dark Mode
+        </button>
+
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </button>
+
+    </div>
+
+</div>
+
+    <!-- Dashboard Cards -->
+     <div class="dashboard-section section active" id="dashboard"></div>
+
+    <div class="cards">
+        
+
+        <div class="card">
+            <h2 id="totalEmployees">0</h2>
+            <p>Total Employees</p>
+        </div>
+
+        <div class="card">
+            <h2 id="activeEmployees">0</h2>
+            <p>Active Employees</p>
+        </div>
+
+        <div class="card">
+            <h2 id="leaveEmployees">0</h2>
+            <p>On Leave</p>
+        </div>
+
+        <div class="card">
+            <h2 id="departments">0</h2>
+            <p>Departments</p>
+        </div>
+        <div class="card">
+          <h2 id="totalPatients">0</h2>
+             <p>Total Patients</p>
+        </div>
+
+    </div>
+
+    <!-- Employee Management -->
+
+    <div class="employee-section section" id="employees">
+
+        <h2>Employee Management</h2>
+
+        <div class="employee-form">
+
+            <input
+                type="text"
+                id="empName"
+                placeholder="Employee Name">
+
+            <select id="empDepartment">
+                <option value="">Select Department</option>
+                <option>HR</option>
+                <option>IT</option>
+                <option>Accounts</option>
+                <option>Reception</option>
+                <option>Doctor</option>
+                <option>Nursing</option>
+            </select>
+
+            <input
+                type="email"
+                id="empEmail"
+                placeholder="Email">
+
+            <input
+                type="number"
+                id="empSalary"
+                placeholder="Salary">
+
+            <select id="empStatus">
+                <option value="Active">Active</option>
+                <option value="On Leave">On Leave</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+            <input
+            type="file"
+              id="empPhoto"
+                  accept="image/*">
+
+            <button onclick="addEmployee()">
+                Add Employee
+            </button>
+
+        </div>
+
+        <input
+            type="text"
+            id="searchEmployee"
+            placeholder="Search Employee..."
+            onkeyup="searchEmployee()">
+
+            <button class="export-btn" onclick="exportCSV()">
+            Export Employee Data
+            </button>
+
+        <div class="table-container">
+
+<table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Email</th>
+                    <th>Salary</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="employeeTable">
+
+            </tbody>
+
+        </table>
+        </div>
+
+    </div>
+
+    <!-- Analytics Section -->
+
+<div class="charts-section section" id="analytics">
+
+    <h2>Analytics Dashboard</h2>
+
+    <div class="chart-card">
+
+        <canvas id="departmentChart"></canvas>
+
+    </div>
+
+</div>
+
+<!-- Attendance Section -->
+
+<div class="attendance-section section" id="attendance">
+
+    <h2>Attendance Tracker</h2>
+
+    <div class="attendance-card">
+
+        <input
+        type="text"
+        id="attendanceName"
+        placeholder="Employee Name">
+
+        <select id="attendanceStatus">
+            <option>Present</option>
+            <option>Absent</option>
+            <option>Half Day</option>
+        </select>
+
+        <button onclick="markAttendance()">
+            Mark Attendance
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody id="attendanceTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="leave-section section" id="leave">
+
+    <h2>Leave Management</h2>
+
+    <div class="leave-form">
+
+        <input
+        type="text"
+        id="leaveEmployee"
+        placeholder="Employee Name">
+
+        <input
+        type="date"
+        id="leaveDate">
+
+        <select id="leaveType">
+            <option>Sick Leave</option>
+            <option>Casual Leave</option>
+            <option>Emergency Leave</option>
+        </select>
+
+        <button onclick="addLeave()">
+            Apply Leave
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="leaveTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+<!-- Patient Management -->
+
+<div class="patient-section section" id="patients">
+
+    <h2>Patient Management</h2>
+
+    <div class="patient-form">
+
+        <input
+        type="text"
+        id="patientName"
+        placeholder="Patient Name">
+
+        <input
+        type="number"
+        id="patientAge"
+        placeholder="Age">
+
+        <input
+        type="text"
+        id="patientDisease"
+        placeholder="Disease">
+
+        <select id="patientDoctor">
+            <option>Dr. Sharma</option>
+            <option>Dr. Patel</option>
+            <option>Dr. Singh</option>
+            <option>Dr. Khan</option>
+        </select>
+
+        <input
+        type="date"
+        id="appointmentDate">
+
+        <input
+        type="text"
+        id="searchPatient"
+        placeholder="Search Patient..."
+        onkeyup="searchPatient()">
+
+        <button onclick="addPatient()">
+            Add Patient
+        </button>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Disease</th>
+                <th>Doctor</th>
+                <th>Appointment</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="patientTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
